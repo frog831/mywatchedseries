@@ -1,32 +1,22 @@
-# Prerequisites
-*.d
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# dependencies
+/node_modules
 
-# Precompiled Headers
-*.gch
-*.pch
+# testing
+/coverage
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# production
+/build
 
-# Fortran module files
-*.mod
-*.smod
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vscode
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
