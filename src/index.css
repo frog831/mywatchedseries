@@ -106,7 +106,8 @@ body {
 }
 
 .episodeTitle {
-  padding-left:10px
+  padding-left:10px;
+  padding-right:10px
 }
 
 .episodeWatched {
@@ -124,4 +125,11 @@ body {
 
 .favList {
   margin-top: 0px;
+}
+
+h1 {
+  font-size: 2.9vw !important;
+  margin:0 !important;
+  font-weight: bold !important;
+  color: #2e6da4 !important;
 }

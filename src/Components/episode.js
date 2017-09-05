@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Panel, Glyphicon ,Button, ListGroupItem, Row, Col } from 'react-bootstrap';
+import LOG from '../Utils/logger.js';
 
 class Episode extends Component {
     constructor() {
@@ -10,7 +11,7 @@ class Episode extends Component {
     }
     render(){
         const {serieName,episode, serieID} = this.props;
-        console.log("Call render method Episode");
+        LOG("Call render method Episode");
         return(
             <Row>
               <Col xs={12} md={12}>

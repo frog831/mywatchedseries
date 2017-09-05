@@ -3,6 +3,7 @@ import axios from 'axios';
 import TheTVHUB from '../Utils/thetvdbAPI.js';
 import Episode from './episode.js';
 import {ListGroup, Tabs, Tab, Glyphicon} from 'react-bootstrap';
+import LOG from '../Utils/logger.js';
 
 function EpisodeList(props) {
     if(props.serie === null || props.serie === undefined)
@@ -30,8 +31,8 @@ class Serie extends Component {
     getEpisodes = (serieID) =>{
         this.setState({loading:true});
         if(this.state.token === ''){
-            console.log("getEpisodes Calling Login() for "+serieID)
-            TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});console.log("token stored in state")} ).then(
+            LOG("getEpisodes Calling Login() for "+serieID)
+            TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});LOG("token stored in state")} ).then(
                 response => {return axios.get(TheTVHUB.proxyURL+TheTVHUB.baseURL+'/series/'+serieID+'/episodes', {headers: {'Authorization': 'Bearer '+this.state.token, 'Accept-Language': 'en-US'}})}
             ).then(this.parseEpisodeList);
         } else {
@@ -53,7 +54,7 @@ class Serie extends Component {
         this.setState({episodesList: listBySeason.slice(), shownSeason: listBySeason.length-1, loading:false});
         /*
         this.state.episodesList.forEach(function(element) {
-            console.log("season: "+element.airedSeason+" / episode: "+element.airedEpisodeNumber+" - Name: "+element.episodeName+" Aired: "+element.firstAired);
+            LOG("season: "+element.airedSeason+" / episode: "+element.airedEpisodeNumber+" - Name: "+element.episodeName+" Aired: "+element.firstAired);
         }, this);
         */
     }
@@ -75,19 +76,19 @@ class Serie extends Component {
             }
 
             if(lastEpisodeWatched !== undefined && new Date(episode.firstAired).getTime() > new Date(lastEpisodeWatched).getTime() && new Date(episode.firstAired).getTime() <= new Date().getTime() )
-                newEpisodes.push(episode.airedEpisodeNumber);
+                newEpisodes.push(episode);
 
         });
         this.props.onSetWatched(serieID, seasonNumber, episodes, newEpisodes);
     }
     render(){
-        console.log("Called render method of Serie component");
+        LOG("Called render method of Serie component");
         if(this.props.serie.id ===null)
             return null;
         const episodesList = this.state.episodesList.slice();
         let watchedEpisodes = (this.props.serie.watchedEpisodes===undefined)?[]:this.props.serie.watchedEpisodes;
         if(this.state.loading){
-            console.log("showing Spinner");
+            LOG("showing Spinner");
             return(
                 <div>
                     Loading... <Glyphicon glyph="repeat" bsClass="glyphicon glyphicon-repeat fast-right-spinner"/>

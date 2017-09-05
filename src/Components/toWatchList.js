@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Panel, ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Panel, ListGroup, ListGroupItem, Row, Col} from 'react-bootstrap';
 
 class ToWatchList extends Component {
 
@@ -17,7 +17,16 @@ render(){
                     <ListGroup fill>
                     {serie.newEpisodes.map((episode,index) => {
                         return(
-                            <ListGroupItem key={index}><span className="episodeTitle">Episode {episode}</span></ListGroupItem>
+                            <ListGroupItem key={index}>
+                                <Row>
+                                    <Col md={9} xs={9}>
+                                        <span className="episodeTitle">Episode {episode.airedSeason + 'x' + episode.airedEpisodeNumber + ' - ' + episode.episodeName}</span>
+                                    </Col>
+                                    <Col md={3} xs={3}>
+                                        <span className="episodeTitle pull-right">{episode.firstAired}</span>
+                                    </Col>
+                                </Row>
+                            </ListGroupItem>
                         );
                     })}
                     <a onClick={() => this.props.updateActiveSerieID(serie.id)} className="episodeTitle">Mark episodes of {serie.serieName} </a>

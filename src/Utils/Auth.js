@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { auth, provider} from './rebase.js';
 import {Button, Image, Dropdown, MenuItem} from 'react-bootstrap';
+import LOG from './logger.js';
 
 
 class Auth extends Component {
@@ -32,7 +33,7 @@ class Auth extends Component {
             // The firebase.auth.AuthCredential type that was used.
             var credential = error.credential;
             // ...
-            console.log(errorCode+", "+errorMessage+", "+email+", "+credential);
+            LOG(errorCode+", "+errorMessage+", "+email+", "+credential);
             alert('Error in the login');
           });
       }

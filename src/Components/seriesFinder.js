@@ -4,6 +4,7 @@ import axios from 'axios';
 import TheTVHUB from '../Utils/thetvdbAPI.js';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import LOG from '../Utils/logger.js';
 
 class SeriesFinder extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class SeriesFinder extends Component {
     }
     
     _onChange = (value) => {
-        console.log("newText: "+value);
+        LOG("newText: "+value);
  		this.setState({
 			value: value
 		});
@@ -29,19 +30,19 @@ class SeriesFinder extends Component {
 		}
 
         if(this.state.token === ''){
-            console.log("getSerieID Calling Login() for "+serieName)
-            return TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});console.log("token stored in state: "+response.data.token)} ).then(
+            LOG("getSerieID Calling Login() for "+serieName)
+            return TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});LOG("token stored in state: "+response.data.token)} ).then(
                 response => {
-                    console.log("login completed, query series name");
+                    LOG("login completed, query series name");
                     return axios.get(TheTVHUB.proxyURL+TheTVHUB.baseURL+TheTVHUB.methods.search+serieName, {headers: {'Authorization': 'Bearer '+this.state.token, 'Accept-Language': 'en-US'}}).then(
-                        (response) => { console.log('Series received');return {options: response.data.data}}
-                    ).catch(error => {console.log("got an error:"+error.response);return Promise.resolve({ options: [] });});
+                        (response) => { LOG('Series received');return {options: response.data.data}}
+                    ).catch(error => {LOG("got an error:"+error.response);return Promise.resolve({ options: [] });});
                 }
             )
         } else {
             return axios.get(TheTVHUB.proxyURL+TheTVHUB.baseURL+TheTVHUB.methods.search+serieName, {headers: {'Authorization': 'Bearer '+this.state.token, 'Accept-Language': 'en-US'}}).then(
-                (response) => { console.log('Series received');return {options: response.data.data}}
-            ).catch(error => {console.log("got an error:"+error.response);return Promise.resolve({ options: [] });});
+                (response) => { LOG('Series received');return {options: response.data.data}}
+            ).catch(error => {LOG("got an error:"+error.response);return Promise.resolve({ options: [] });});
         }        
     }
     gotoSerie(value, event) {
@@ -77,7 +78,7 @@ class SeriesFinder extends Component {
     render(){
         const AsyncComponent = Select.Async;
         
-        console.log("render method called");
+        LOG("render method called");
         return (
             <div>
             <form onSubmit={this.submitForm.bind(this)} className="form-horizontal" id="favouriteSeries" method="post">          
