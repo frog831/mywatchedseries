@@ -80,19 +80,18 @@ isAuthenticated = (status, user) => {
     let itemToModify = seriesToUpdate[seriesToUpdate.findIndex(x => x.id === serieID)];
     itemToModify.watchedEpisodes = [];   
     itemToModify.newEpisodes = []; 
-    itemToModify.lastWatched = new Date().getTime();
-    episodes.forEach((episodeNumber) => {
-      itemToModify.watchedEpisodes.push(seasonNumber+'x'+episodeNumber);      
-    });
-    /*
-    newEpisodes.forEach((episodeNumber) => {
-      itemToModify.newEpisodes.push(seasonNumber+'x'+episodeNumber);      
+    //itemToModify.lastWatched = new Date().getTime();
+    /*episodes.forEach((episode) => {
+      itemToModify.watchedEpisodes.push(episode);      
     });*/
+    episodes.sort((a,b) => b.firstAired - a.firstAired);
+    itemToModify.watchedEpisodes = episodes;
     itemToModify.newEpisodes = newEpisodes;
-    seriesToUpdate.sort((a,b) => b.lastWatched - a.lastWatched);
+    seriesToUpdate.sort((a,b) => new Date(b.watchedEpisodes[0].firstAired).getTime() - new Date(a.watchedEpisodes[0].firstAired).getTime());
     
     this.setState({favouriteSeries: seriesToUpdate});
   }
+
   removeFavouriteSerie = (serieID) => {
     let listToRemove = this.state.favouriteSeries.slice();
     let serieIndex = listToRemove.findIndex(x => x.id === serieID);
@@ -102,7 +101,7 @@ isAuthenticated = (status, user) => {
 
   render() {
     LOG("called render of App component");
-    let index=this.state.favouriteSeries.findIndex(x => x.id === this.state.activeSerieID);
+    //let index=this.state.favouriteSeries.findIndex(x => x.id === this.state.activeSerieID);
     return (
       <Grid fluid={true}>
         <Row bsClass="row row-match-my-cols">
@@ -124,8 +123,8 @@ isAuthenticated = (status, user) => {
             </Row>
             <Row bsClass="row mainLayout">
               <Col md={12}>
-                <ToWatchList favouriteSeries={(index>-1)?null:this.state.favouriteSeries} updateActiveSerieID={this.updateActiveSerieID}/>
-                <EpisodeList serie={(index>-1)?this.state.favouriteSeries[index]:null} updateWatchedEpisodes={this.updateWatchedEpisodes}/>
+                <ToWatchList favouriteSeries={(this.state.activeSerieID>-1)?null:this.state.favouriteSeries} updateActiveSerieID={this.updateActiveSerieID}/>
+                <EpisodeList activeSerieID={this.state.activeSerieID} series={this.state.favouriteSeries} updateWatchedEpisodes={this.updateWatchedEpisodes}/>
               </Col>
             </Row>
           </Col>

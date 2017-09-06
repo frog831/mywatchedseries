@@ -6,16 +6,22 @@ import {ListGroup, Tabs, Tab, Glyphicon} from 'react-bootstrap';
 import LOG from '../Utils/logger.js';
 
 function EpisodeList(props) {
-    if(props.serie === null || props.serie === undefined)
-      return (<div></div>);
-    else
-      return(
-        <div style={(props.serie.id === null) ? { visibility: 'hidden' } : { visibility: 'visible' }}>
-          <h3 className="favList">{props.serie.serieName} - Episodes</h3>
-          <Serie serie={props.serie} onSetWatched={props.updateWatchedEpisodes} />
-        </div>
-      );
-  }
+    if (props.series === null || props.series === undefined)
+        return (<div></div>);
+    else{
+        let seriesList = props.series.map(
+            (serie) => {
+                return (
+                    <div key={serie.id} style={(serie.id !== props.activeSerieID) ? { display: 'none', visibility: 'hidden' } : { visibility: 'visible' }}>
+                        <h3 className="favList">{serie.serieName} - Episodes</h3>
+                        <Serie serie={serie} onSetWatched={props.updateWatchedEpisodes} />
+                    </div>
+                );
+            }
+        );
+        return (<div>{seriesList}</div>);
+    }
+}
 
 class Serie extends Component {
     constructor() {
@@ -32,7 +38,7 @@ class Serie extends Component {
         this.setState({loading:true});
         if(this.state.token === ''){
             LOG("getEpisodes Calling Login() for "+serieID)
-            TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});LOG("token stored in state")} ).then(
+            return TheTVHUB.doLoginTVHUB().then(response => {this.setState({token: response.data.token});LOG("token stored in state")} ).then(
                 response => {return axios.get(TheTVHUB.proxyURL+TheTVHUB.baseURL+'/series/'+serieID+'/episodes', {headers: {'Authorization': 'Bearer '+this.state.token, 'Accept-Language': 'en-US'}})}
             ).then(this.parseEpisodeList);
         } else {
@@ -50,36 +56,51 @@ class Serie extends Component {
             }
             listBySeason[item.airedSeason].push(item);
         });
+        let shownSeason = (this.props.serie.watchedEpisodes[0] === undefined)?0:this.props.serie.watchedEpisodes[0].airedSeason;
+        this.setState({episodesList: listBySeason.slice(), shownSeason: shownSeason, loading:false});
 
-        this.setState({episodesList: listBySeason.slice(), shownSeason: listBySeason.length-1, loading:false});
-        /*
-        this.state.episodesList.forEach(function(element) {
-            LOG("season: "+element.airedSeason+" / episode: "+element.airedEpisodeNumber+" - Name: "+element.episodeName+" Aired: "+element.firstAired);
-        }, this);
-        */
     }
     componentWillMount(){
-        this.getEpisodes(this.props.serie.id);
+        this.getEpisodes(this.props.serie.id).then(() => {
+            if(this.props.serie.watchedEpisodes !== undefined && this.props.serie.watchedEpisodes.length > 0)
+                this.props.onSetWatched(this.props.serie.id, this.props.serie.watchedEpisodes[0].airedSeason, this.props.serie.watchedEpisodes, this.checkNewEpisodes());
+            else
+                console.log(this.props.serie.serieName+"not eligible for newEp refresh");
+        });
+
     }
     componentWillReceiveProps(nextProps) {
         if(this.props.serie.id !== nextProps.serie.id){
             this.getEpisodes(nextProps.serie.id);
         }
     }
+
+    checkNewEpisodes = (newLastWatched) => {
+        let newEpisodes = [];
+        let lastEpisodeWatched;
+        if(newLastWatched !== undefined)
+            lastEpisodeWatched = newLastWatched;
+        else
+            lastEpisodeWatched = this.props.serie.watchedEpisodes[0].firstAired;
+        this.state.episodesList.forEach((season, index) => {
+            if(index > 0)
+                season.forEach((episode) => {
+                if(lastEpisodeWatched !== undefined && new Date(episode.firstAired).getTime() > new Date(lastEpisodeWatched).getTime() && new Date(episode.firstAired).getTime() <= new Date().getTime() )
+                    newEpisodes.push(episode);
+        })});
+        return newEpisodes;
+    }
+
     onSetWatched = (serieID, seasonNumber, episodeNumber, firstAired) => {
         let episodes = [];
-        let lastEpisodeWatched = firstAired;
-        let newEpisodes = []
         this.state.episodesList[seasonNumber].forEach((episode) => {
             if(episode.airedSeason === seasonNumber && episode.airedEpisodeNumber <= episodeNumber){
-                episodes.push(episode.airedEpisodeNumber);                
+                episodes.push(episode);                
             }
-
-            if(lastEpisodeWatched !== undefined && new Date(episode.firstAired).getTime() > new Date(lastEpisodeWatched).getTime() && new Date(episode.firstAired).getTime() <= new Date().getTime() )
-                newEpisodes.push(episode);
-
         });
+        let newEpisodes = this.checkNewEpisodes(firstAired);
         this.props.onSetWatched(serieID, seasonNumber, episodes, newEpisodes);
+        this.setState({shownSeason: seasonNumber});
     }
     render(){
         LOG("Called render method of Serie component");
@@ -99,8 +120,7 @@ class Serie extends Component {
             (season, index) => {
                 let tabContent = season.map(
                             (element) => {
-                                let elementWatched = false;
-                                (watchedEpisodes.findIndex(x => x === element.airedSeason + 'x' + element.airedEpisodeNumber) > -1) ? (elementWatched = true) : (elementWatched = false);
+                                let elementWatched = (watchedEpisodes.findIndex(x => (x.airedSeason+'x'+x.airedEpisodeNumber) === element.airedSeason + 'x' + element.airedEpisodeNumber) > -1);
                                 return (
                                     <Episode watched={elementWatched} onSetWatched={this.onSetWatched} key={element.airedEpisodeNumber + "" + element.airedSeason} uniqueID={element.airedEpisodeNumber + "" + element.airedSeason} eventKey={element.episodeName} serieName={this.props.serie.serieName} episode={element} serieID={this.props.serie.id} />
                                 )
