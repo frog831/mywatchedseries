@@ -56,7 +56,7 @@ class Serie extends Component {
             }
             listBySeason[item.airedSeason].push(item);
         });
-        let shownSeason = (this.props.serie.watchedEpisodes[0] === undefined)?0:this.props.serie.watchedEpisodes[0].airedSeason;
+        let shownSeason = (this.props.serie.watchedEpisodes === undefined || this.props.serie.watchedEpisodes[0] === undefined)?0:this.props.serie.watchedEpisodes[0].airedSeason;
         this.setState({episodesList: listBySeason.slice(), shownSeason: shownSeason, loading:false});
 
     }
@@ -65,7 +65,7 @@ class Serie extends Component {
             if(this.props.serie.watchedEpisodes !== undefined && this.props.serie.watchedEpisodes.length > 0)
                 this.props.onSetWatched(this.props.serie.id, this.props.serie.watchedEpisodes[0].airedSeason, this.props.serie.watchedEpisodes, this.checkNewEpisodes());
             else
-                console.log(this.props.serie.serieName+"not eligible for newEp refresh");
+                console.log(this.props.serie.serieName+" not eligible for newEp refresh");
         });
 
     }

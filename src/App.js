@@ -87,7 +87,7 @@ isAuthenticated = (status, user) => {
     episodes.sort((a,b) => b.firstAired - a.firstAired);
     itemToModify.watchedEpisodes = episodes;
     itemToModify.newEpisodes = newEpisodes;
-    seriesToUpdate.sort((a,b) => new Date(b.watchedEpisodes[0].firstAired).getTime() - new Date(a.watchedEpisodes[0].firstAired).getTime());
+    //seriesToUpdate.sort((a,b) => new Date(b.watchedEpisodes[0].firstAired).getTime() - new Date(a.watchedEpisodes[0].firstAired).getTime());
     
     this.setState({favouriteSeries: seriesToUpdate});
   }
