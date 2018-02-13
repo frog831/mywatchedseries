@@ -102,7 +102,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: left;
+}
 
+.row:before, .row:after {
+  width: 0;
 }
 
 .episodeTitle {
