@@ -105,7 +105,7 @@ isAuthenticated = (status, user) => {
     return (
       <Grid fluid={true}>
         <Row bsClass="row row-match-my-cols">
-          <Col xs={9} md={9}> <h1><Glyphicon glyph='search' />  MyWhatchedSeries </h1></Col>
+          <Col xs={9} md={9}> <h1><Glyphicon glyph='search' />  MyWatchedSeries </h1></Col>
           <Col xs={3} md={3}>
             <Auth isAuthenticated={this.isAuthenticated} />
           </Col>
@@ -131,7 +131,7 @@ isAuthenticated = (status, user) => {
         </Row>
         }
         <Row>
-          <Col md={12}><small>&copy; Copyright. 2017 All rights reserved</small></Col>
+          <Col md={12}><small>&copy; Copyright. 2019 All rights reserved</small></Col>
         </Row>
       </Grid>
     );

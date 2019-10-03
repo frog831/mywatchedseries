@@ -1,1 +1,1 @@
-Visit mywhatchedseries.firebaseapp.com
+Visit mywatchedseries.firebaseapp.com

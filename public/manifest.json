@@ -1,10 +1,10 @@
 {
   "short_name": "MyWatchedSeries",
-  "name": "Track your whatched tv series",
+  "name": "Track your watched tv series",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "192x192",
+      "size": "192x192",
       "type": "image/png"
     }
   ],
