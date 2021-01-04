@@ -5,7 +5,7 @@
   "homepage": "http://mywatchedseries.firebaseapp.com",
   "dependencies": {
     "ajv": "^6.10.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bootstrap": "^3.3.7",
     "firebase": "^5.3.0",
     "guid": "0.0.12",
